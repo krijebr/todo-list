@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/krijebr/todo-list/internal/entity"
+)
 
 func main() {
-	fmt.Println("АЛё")
+	task := entity.Task{
+		Id:   123,
+		Name: "test",
+	}
+
+	fmt.Printf("%+v", task)
 }
