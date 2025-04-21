@@ -1,16 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+	"strconv"
 
-	"github.com/krijebr/todo-list/internal/entity"
+	v1 "github.com/krijebr/todo-list/internal/controller/http/v1"
 )
 
-func main() {
-	task := entity.Task{
-		Id:   123,
-		Name: "test",
-	}
+const port int = 8080
 
-	fmt.Printf("%+v", task)
+func main() {
+
+	r := v1.CreateRouter()
+
+	adr := ":" + strconv.Itoa(port)
+	err := http.ListenAndServe(adr, r)
+	if err != nil {
+		log.Println("Ошибка запуска сервера", err)
+	}
 }
