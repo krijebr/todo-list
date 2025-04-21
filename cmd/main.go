@@ -6,13 +6,15 @@ import (
 	"strconv"
 
 	v1 "github.com/krijebr/todo-list/internal/controller/http/v1"
+	"github.com/krijebr/todo-list/internal/usecase"
 )
 
 const port int = 8080
 
 func main() {
 
-	r := v1.CreateRouter()
+	uc := usecase.NewTaskUseCase()
+	r := v1.CreateRouter(uc)
 
 	adr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(adr, r)

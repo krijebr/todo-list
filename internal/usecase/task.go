@@ -1,23 +1,36 @@
 package usecase
 
+import (
+	"errors"
+
+	"github.com/krijebr/todo-list/internal/entity"
+)
+
 type Task struct {
 }
 
-/*
-func Create(task *entity.Task) error {
-}
-func GetAll() ([]*entity.Task, error){
+var err = errors.New("not implemented")
 
+func (t *Task) Create(task *entity.Task) error {
+	return err
 }
-func DeleteById(id int) error {
-
+func (t *Task) GetAll() ([]*entity.Task, error) {
+	return nil, err
 }
-func SetDoneById(id int) error {
-
+func (t *Task) DeleteById(id int) error {
+	return err
 }
-func UnsetDoneById(id int) error {
-
+func (t *Task) SetDoneById(id int) error {
+	return err
 }
-func UpdateNameById(id int, name string) error {
+func (t *Task) UnsetDoneById(id int) error {
+	return err
+}
+func (t *Task) UpdateNameById(id int, name string) error {
+	return err
+}
 
-}*/
+func NewTaskUseCase() TaskUseCase {
+	t := new(Task)
+	return t
+}
