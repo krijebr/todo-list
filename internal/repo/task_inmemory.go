@@ -4,46 +4,46 @@ import "github.com/krijebr/todo-list/internal/entity"
 
 type TaskRepoInMemory struct {
 	tasks map[int]*entity.Task
-	Id    int
+	id    int
 }
 
-func NewId(T *TaskRepoInMemory) int {
+func (t *TaskRepoInMemory) newId() int {
 	b := true
 	for b {
-		if _, inMap := T.tasks[T.Id]; inMap {
-			T.Id++
+		if _, inMap := t.tasks[t.id]; inMap {
+			t.id++
 		} else {
 			b = false
 		}
 	}
-	return T.Id
+	return t.id
 }
-func (T *TaskRepoInMemory) Create(t *entity.Task) error {
-	id := NewId(T)
+func (r *TaskRepoInMemory) Create(t *entity.Task) error {
+	id := r.newId()
 	t.Id = id
-	T.tasks[id] = t
+	r.tasks[id] = t
 	return nil
 }
-func (T *TaskRepoInMemory) GetAll() ([]*entity.Task, error) {
+func (r *TaskRepoInMemory) GetAll() ([]*entity.Task, error) {
 	var tasks []*entity.Task
-	for _, value := range T.tasks {
+	for _, value := range r.tasks {
 		tasks = append(tasks, value)
 	}
 	return tasks, nil
 }
-func (T *TaskRepoInMemory) DeleteById(id int) error {
-	delete(T.tasks, id)
+func (r *TaskRepoInMemory) DeleteById(id int) error {
+	delete(r.tasks, id)
 	return nil
 }
-func (T *TaskRepoInMemory) UpdateTaskById(id int, name string) error {
-	T.tasks[id].Name = name
+func (r *TaskRepoInMemory) UpdateTaskById(id int, name string) error {
+	r.tasks[id].Name = name
 	return nil
 }
-func (T *TaskRepoInMemory) SetDoneById(id int) error {
-	T.tasks[id].IsDone = true
+func (r *TaskRepoInMemory) SetDoneById(id int) error {
+	r.tasks[id].IsDone = true
 	return nil
 }
-func (T *TaskRepoInMemory) UnsetDoneById(id int) error {
-	T.tasks[id].IsDone = false
+func (r *TaskRepoInMemory) UnsetDoneById(id int) error {
+	r.tasks[id].IsDone = false
 	return nil
 }

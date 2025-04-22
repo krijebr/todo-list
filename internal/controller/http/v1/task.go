@@ -66,6 +66,7 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка декодирования тела запроса", err)
 		return
 	}
+	newtask.IsDone = false
 	err = h.usecase.Create(&newtask)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
