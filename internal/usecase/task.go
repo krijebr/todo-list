@@ -18,20 +18,45 @@ func NewTaskUseCase(r repo.TaskRepository) TaskUseCase {
 var err = errors.New("not implemented")
 
 func (t *Task) Create(task *entity.Task) error {
-	return err
+	err := t.repo.Create(task)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 func (t *Task) GetAll() ([]*entity.Task, error) {
-	return nil, err
+	var tasks []*entity.Task
+	tasks, err := t.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }
 func (t *Task) DeleteById(id int) error {
-	return err
+	err := t.repo.DeleteById(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 func (t *Task) SetDoneById(id int) error {
-	return err
+	err := t.repo.SetDoneById(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 func (t *Task) UnsetDoneById(id int) error {
-	return err
+	err := t.repo.UnsetDoneById(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 func (t *Task) UpdateNameById(id int, name string) error {
-	return err
+	err := t.repo.UpdateTaskById(id, name)
+	if err != nil {
+		return err
+	}
+	return nil
 }
