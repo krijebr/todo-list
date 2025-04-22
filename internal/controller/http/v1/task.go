@@ -30,76 +30,103 @@ func CreateRouter(uc usecase.TaskUseCase) *mux.Router {
 
 	return myRouter
 }
+func parseId(r *http.Request) (int, error) {
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
 
-func (TH *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
-	_, err := TH.usecase.GetAll()
+func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
+	_, err := h.usecase.GetAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка получения ", err)
-	} else {
-		w.WriteHeader(http.StatusOK)
-		log.Println("Получение всех задач")
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	log.Println("Получение всех задач")
 
 }
 
-func (TH *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
+func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 	t := new(entity.Task)
-	err := TH.usecase.Create(t)
+	err := h.usecase.Create(t)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка создания ", err)
-	} else {
-		w.WriteHeader(http.StatusCreated)
-		log.Println("Задача создана")
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	log.Println("Задача создана")
+
 }
 
-func (TH *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	err := TH.usecase.DeleteById(id)
+func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
+	id, err1 := parseId(r)
+	if err1 != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка обработки id ", err1)
+		return
+	}
+	err := h.usecase.DeleteById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка удаления ", err)
-	} else {
-		w.WriteHeader(http.StatusOK)
-		log.Println("Задача ", id, " удалена")
+		return
 	}
+	w.WriteHeader(http.StatusOK)
+	log.Println("Задача ", id, " удалена")
+
 }
 
-func (TH *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
+	id, err1 := parseId(r)
+	if err1 != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка обработки id ", err1)
+		return
+	}
 	var newtaskname string
-	err := TH.usecase.UpdateNameById(id, newtaskname)
+	err := h.usecase.UpdateNameById(id, newtaskname)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка обновления ", err)
-	} else {
-		w.WriteHeader(http.StatusCreated)
-		log.Println("Задача ", id, " обновлена")
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	log.Println("Задача ", id, " обновлена")
+
 }
 
-func (TH *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	err := TH.usecase.SetDoneById(id)
+func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
+	id, err1 := parseId(r)
+	if err1 != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка обработки id ", err1)
+		return
+	}
+	err := h.usecase.SetDoneById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка обновления ", err)
-	} else {
-		w.WriteHeader(http.StatusCreated)
-		log.Println("Задача ", id, " помечена сделанной")
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	log.Println("Задача ", id, " помечена сделанной")
+
 }
 
-func (TH *TaskHandlers) TaskUnsetDone(w http.ResponseWriter, r *http.Request) {
+func (h *TaskHandlers) TaskUnsetDone(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-	err := TH.usecase.UnsetDoneById(id)
+	err := h.usecase.UnsetDoneById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка обновления ", err)
-	} else {
-		w.WriteHeader(http.StatusCreated)
-		log.Println("Задача ", id, " помечена несделанной")
+		return
 	}
+	w.WriteHeader(http.StatusCreated)
+	log.Println("Задача ", id, " помечена несделанной")
+
 }
