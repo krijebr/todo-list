@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -51,8 +53,20 @@ func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
-	t := new(entity.Task)
-	err := h.usecase.Create(t)
+	var newtask entity.Task
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка чтения тела запроса ", err)
+		return
+	}
+	err = json.Unmarshal(data, &newtask)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка декодирования тела запроса", err)
+		return
+	}
+	err = h.usecase.Create(&newtask)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка создания ", err)
@@ -64,13 +78,13 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
-	id, err1 := parseId(r)
-	if err1 != nil {
+	id, err := parseId(r)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("Ошибка обработки id ", err1)
+		log.Println("Ошибка обработки id ", err)
 		return
 	}
-	err := h.usecase.DeleteById(id)
+	err = h.usecase.DeleteById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка удаления ", err)
@@ -82,14 +96,29 @@ func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
-	id, err1 := parseId(r)
-	if err1 != nil {
+	type request struct {
+		Name string `json:"name"`
+	}
+	id, err := parseId(r)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("Ошибка обработки id ", err1)
+		log.Println("Ошибка обработки id ", err)
 		return
 	}
-	var newtaskname string
-	err := h.usecase.UpdateNameById(id, newtaskname)
+	req := request{}
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка чтения тела запроса ", err)
+		return
+	}
+	err = json.Unmarshal(data, &req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("Ошибка декодирования тела запроса", err)
+		return
+	}
+	err = h.usecase.UpdateNameById(id, req.Name)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка обновления ", err)
@@ -101,13 +130,13 @@ func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
-	id, err1 := parseId(r)
-	if err1 != nil {
+	id, err := parseId(r)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Println("Ошибка обработки id ", err1)
+		log.Println("Ошибка обработки id ", err)
 		return
 	}
-	err := h.usecase.SetDoneById(id)
+	err = h.usecase.SetDoneById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка обновления ", err)
