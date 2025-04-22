@@ -7,6 +7,12 @@ type TaskRepoInMemory struct {
 	id    int
 }
 
+func NewTaskRepoInMemory() TaskRepository {
+	return &TaskRepoInMemory{
+		tasks: make(map[int]*entity.Task),
+		id:    1}
+}
+
 func (t *TaskRepoInMemory) newId() int {
 	b := true
 	for b {

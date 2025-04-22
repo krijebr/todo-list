@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	v1 "github.com/krijebr/todo-list/internal/controller/http/v1"
+	"github.com/krijebr/todo-list/internal/repo"
 	"github.com/krijebr/todo-list/internal/usecase"
 )
 
@@ -13,7 +14,8 @@ const port int = 8080
 
 func main() {
 
-	uc := usecase.NewTaskUseCase()
+	rep := repo.NewTaskRepoInMemory()
+	uc := usecase.NewTaskUseCase(rep)
 	r := v1.CreateRouter(uc)
 
 	adr := ":" + strconv.Itoa(port)
