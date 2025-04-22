@@ -41,15 +41,21 @@ func parseId(r *http.Request) (int, error) {
 }
 
 func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
-	_, err := h.usecase.GetAll()
+	tasks, err := h.usecase.GetAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Ошибка получения ", err)
 		return
 	}
+	data, err := json.Marshal(tasks)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("Ошибка кодирования данных в json ", err)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
+	w.Write(data)
 	log.Println("Получение всех задач")
-
 }
 
 func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +81,6 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusCreated)
 	log.Println("Задача создана")
-
 }
 
 func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +98,6 @@ func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	log.Println("Задача ", id, " удалена")
-
 }
 
 func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
@@ -125,9 +129,8 @@ func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка обновления ", err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	log.Println("Задача ", id, " обновлена")
-
 }
 
 func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
@@ -143,9 +146,8 @@ func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка обновления ", err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	log.Println("Задача ", id, " помечена сделанной")
-
 }
 
 func (h *TaskHandlers) TaskUnsetDone(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +158,6 @@ func (h *TaskHandlers) TaskUnsetDone(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка обновления ", err)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	log.Println("Задача ", id, " помечена несделанной")
-
 }
