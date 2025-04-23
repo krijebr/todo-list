@@ -41,7 +41,8 @@ func main() {
 	rep1 := repo.NewTaskRepoPg(db)
 	_ = rep1
 	rep := repo.NewTaskRepoInMemory()
-	uc := usecase.NewTaskUseCase(rep)
+	_ = rep
+	uc := usecase.NewTaskUseCase(rep1)
 	r := v1.CreateRouter(uc)
 
 	adr := ":" + strconv.Itoa(port)
