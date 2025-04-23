@@ -14,7 +14,8 @@ type TaskRepoPg struct {
 
 func NewTaskRepoPg(db *sql.DB) TaskRepository {
 	return &TaskRepoPg{
-		db: db}
+		db: db,
+	}
 }
 
 func (r *TaskRepoPg) Create(t *entity.Task) error {
@@ -23,8 +24,6 @@ func (r *TaskRepoPg) Create(t *entity.Task) error {
 		log.Println("Ошибка добавления в базу данных", err)
 		return err
 	}
-	/*c, err := result.RowsAffected()
-	log.Printf("В базу данных добавлено %d строк", c)*/
 	return nil
 }
 func (r *TaskRepoPg) GetAll() ([]*entity.Task, error) {
@@ -59,14 +58,14 @@ func (r *TaskRepoPg) UpdateTaskById(id int, name string) error {
 	return nil
 }
 func (r *TaskRepoPg) SetDoneById(id int) error {
-	_, err := r.db.Exec("update tasks set isdone = true where id = $1", id)
+	_, err := r.db.Exec("update tasks set is_done = true where id = $1", id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (r *TaskRepoPg) UnsetDoneById(id int) error {
-	_, err := r.db.Exec("update tasks set isdone = false where id = $1", id)
+	_, err := r.db.Exec("update tasks set is_done = false where id = $1", id)
 	if err != nil {
 		return err
 	}
