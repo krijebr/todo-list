@@ -53,6 +53,7 @@ func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка кодирования данных в json ", err)
 		return
 	}
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(data)
 	log.Println("Получение всех задач")
