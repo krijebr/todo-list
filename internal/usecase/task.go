@@ -33,28 +33,64 @@ func (t *Task) GetAll() ([]*entity.Task, error) {
 	return tasks, nil
 }
 func (t *Task) DeleteById(id int) error {
-	err := t.repo.DeleteById(id)
+	_, err := t.repo.GetById(id)
+	if err != nil {
+		switch {
+		case err == repo.ErrTaskNotFound:
+			return ErrTaskNotFound
+		default:
+			return err
+		}
+	}
+	err = t.repo.DeleteById(id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (t *Task) SetDoneById(id int) error {
-	err := t.repo.SetDoneById(id)
+	_, err := t.repo.GetById(id)
+	if err != nil {
+		switch {
+		case err == repo.ErrTaskNotFound:
+			return ErrTaskNotFound
+		default:
+			return err
+		}
+	}
+	err = t.repo.SetDoneById(id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (t *Task) UnsetDoneById(id int) error {
-	err := t.repo.UnsetDoneById(id)
+	_, err := t.repo.GetById(id)
+	if err != nil {
+		switch {
+		case err == repo.ErrTaskNotFound:
+			return ErrTaskNotFound
+		default:
+			return err
+		}
+	}
+	err = t.repo.UnsetDoneById(id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 func (t *Task) UpdateNameById(id int, name string) error {
-	err := t.repo.UpdateTaskById(id, name)
+	_, err := t.repo.GetById(id)
+	if err != nil {
+		switch {
+		case err == repo.ErrTaskNotFound:
+			return ErrTaskNotFound
+		default:
+			return err
+		}
+	}
+	err = t.repo.UpdateTaskById(id, name)
 	if err != nil {
 		return err
 	}

@@ -72,3 +72,11 @@ func (r *TaskRepoPg) UnsetDoneById(id int) error {
 	}
 	return nil
 }
+func (r *TaskRepoPg) GetById(id int) (*entity.Task, error) {
+	task := new(entity.Task)
+	err := r.db.QueryRow("select * from tasks where id = $1", id).Scan(&task.Id, &task.Name, &task.IsDone)
+	if err == sql.ErrNoRows {
+		return nil, ErrTaskNotFound
+	}
+	return task, nil
+}

@@ -1,6 +1,8 @@
 package repo
 
-import "github.com/krijebr/todo-list/internal/entity"
+import (
+	"github.com/krijebr/todo-list/internal/entity"
+)
 
 type TaskRepoInMemory struct {
 	tasks map[int]*entity.Task
@@ -13,16 +15,16 @@ func NewTaskRepoInMemory() TaskRepository {
 		id:    1}
 }
 
-func (t *TaskRepoInMemory) newId() int {
+func (r *TaskRepoInMemory) newId() int {
 	b := true
 	for b {
-		if _, inMap := t.tasks[t.id]; inMap {
-			t.id++
+		if _, inMap := r.tasks[r.id]; inMap {
+			r.id++
 		} else {
 			b = false
 		}
 	}
-	return t.id
+	return r.id
 }
 func (r *TaskRepoInMemory) Create(t *entity.Task) error {
 	id := r.newId()
@@ -52,4 +54,12 @@ func (r *TaskRepoInMemory) SetDoneById(id int) error {
 func (r *TaskRepoInMemory) UnsetDoneById(id int) error {
 	r.tasks[id].IsDone = false
 	return nil
+}
+
+func (r *TaskRepoInMemory) GetById(id int) (*entity.Task, error) {
+	if task, inMap := r.tasks[id]; inMap {
+		return task, nil
+	} else {
+		return nil, ErrTaskNotFound
+	}
 }

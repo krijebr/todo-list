@@ -9,4 +9,5 @@ type TaskRepository interface {
 	UpdateTaskById(id int, name string) error
 	SetDoneById(id int) error
 	UnsetDoneById(id int) error
+	GetById(id int) (*entity.Task, error)
 }
