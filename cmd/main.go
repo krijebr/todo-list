@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	v1 "github.com/krijebr/todo-list/internal/controller/http/v1"
 	"github.com/krijebr/todo-list/internal/repo"
 	"github.com/krijebr/todo-list/internal/usecase"
+	_ "github.com/lib/pq"
 )
 
 const port int = 8080
@@ -22,12 +24,21 @@ const (
 )
 
 func main() {
+	log.Println("starting app")
 
-	connectionDbUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, portdb, username, password, dbname)
-	rep1, err := repo.NewTaskRepoInDb(connectionDbUrl)
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, portdb, username, password, dbname)
+
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Println(err)
+		log.Println("Ошибка подключения к базе данных", err)
+		return
 	}
+	_, err = db.Exec("select 1")
+	if err != nil {
+		log.Println("Ошибка работы с базой данных", err)
+		return
+	}
+	rep1 := repo.NewTaskRepoPg(db)
 	_ = rep1
 	rep := repo.NewTaskRepoInMemory()
 	uc := usecase.NewTaskUseCase(rep)
