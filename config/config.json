@@ -1,0 +1,8 @@
+{
+    "host":"localhost",
+    "port_db":5432,
+    "user_name":"postgres",
+    "password":"mysecretpassword",
+    "db_name":"postgres",
+    "port_r":8080
+}
