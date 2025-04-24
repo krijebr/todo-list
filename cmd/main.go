@@ -25,7 +25,7 @@ func main() {
 		return
 	}
 
-	db, err := initDB(cfg)
+	db, err := initDB(&cfg.Postgres)
 	if err != nil {
 		log.Println("Ошибка инициализации базы данных", err)
 		return
@@ -43,8 +43,8 @@ func main() {
 	}
 }
 
-func initDB(cfg *config.Config) (*sql.DB, error) {
-	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", cfg.Postgres.Host, cfg.Postgres.Port, cfg.Postgres.UserName, cfg.Postgres.Password, cfg.Postgres.DBName)
+func initDB(cfg *config.Postgres) (*sql.DB, error) {
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.UserName, cfg.Password, cfg.DBName)
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {

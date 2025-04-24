@@ -29,6 +29,7 @@ func (r *TaskRepoInMemory) newId() int {
 func (r *TaskRepoInMemory) Create(t *entity.Task) error {
 	id := r.newId()
 	t.Id = id
+	t.IsDone = false
 	r.tasks[id] = t
 	return nil
 }

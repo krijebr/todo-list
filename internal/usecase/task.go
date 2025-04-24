@@ -2,10 +2,13 @@ package usecase
 
 import (
 	"errors"
+	"unicode/utf8"
 
 	"github.com/krijebr/todo-list/internal/entity"
 	"github.com/krijebr/todo-list/internal/repo"
 )
+
+const MinNameLength int = 1
 
 type Task struct {
 	repo repo.TaskRepository
@@ -18,6 +21,9 @@ func NewTaskUseCase(r repo.TaskRepository) TaskUseCase {
 var err = errors.New("not implemented")
 
 func (t *Task) Create(task *entity.Task) error {
+	if utf8.RuneCountInString(task.Name) < MinNameLength {
+		return ErrInvalidTaskName
+	}
 	err := t.repo.Create(task)
 	if err != nil {
 		return err
@@ -89,6 +95,9 @@ func (t *Task) UpdateNameById(id int, name string) error {
 		default:
 			return err
 		}
+	}
+	if utf8.RuneCountInString(name) < MinNameLength {
+		return ErrInvalidTaskName
 	}
 	err = t.repo.UpdateTaskById(id, name)
 	if err != nil {

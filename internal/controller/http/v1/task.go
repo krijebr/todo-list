@@ -73,12 +73,18 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка декодирования тела запроса", err)
 		return
 	}
-	newtask.IsDone = false
 	err = h.usecase.Create(&newtask)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Println("Ошибка создания ", err)
-		return
+		switch {
+		case err == usecase.ErrInvalidTaskName:
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println("Пустая строка", err)
+			return
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println("Ошибка создания ", err)
+			return
+		}
 	}
 	w.WriteHeader(http.StatusCreated)
 	log.Println("Задача создана")
@@ -137,6 +143,10 @@ func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
 		case err == usecase.ErrTaskNotFound:
 			w.WriteHeader(http.StatusBadRequest)
 			log.Println("Строки с таким id не существует", err)
+			return
+		case err == usecase.ErrInvalidTaskName:
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println("Пустая строка", err)
 			return
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
