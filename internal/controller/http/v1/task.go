@@ -29,9 +29,9 @@ func CreateRouter(uc usecase.TaskUseCase) *mux.Router {
 	myRouter.HandleFunc("/task/{id:[0-9]+}", myhandler.updateTask).Methods("PUT")
 	myRouter.HandleFunc("/task/{id:[0-9]+}/set-done", myhandler.TaskSetDone).Methods("PUT")
 	myRouter.HandleFunc("/task/{id:[0-9]+}/unset-done", myhandler.TaskUnsetDone).Methods("PUT")
-	myRouter.HandleFunc("/task/{id:[0-9]+}/unset-done", myhandler.TaskUnsetDone)
 	myRouter.HandleFunc("/task/{id:[0-9]+}", myhandler.options).Methods("OPTIONS")
-
+	myRouter.HandleFunc("/task/{id:[0-9]+}/set-done", myhandler.options).Methods("OPTIONS")
+	myRouter.HandleFunc("/task/{id:[0-9]+}/unset-done", myhandler.options).Methods("OPTIONS")
 	return myRouter
 }
 func parseId(r *http.Request) (int, error) {
@@ -43,6 +43,9 @@ func parseId(r *http.Request) (int, error) {
 }
 
 func (h *TaskHandlers) options(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 }
@@ -50,7 +53,7 @@ func (h *TaskHandlers) options(w http.ResponseWriter, r *http.Request) {
 func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodOptions {
 		return
@@ -91,7 +94,7 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 	err = h.usecase.Create(&newtask)
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err != nil {
 		switch {
@@ -113,7 +116,7 @@ func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Access-Control-Allow-Headers", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := parseId(r)
 	if err != nil {
@@ -183,6 +186,10 @@ func (h *TaskHandlers) updateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := parseId(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,6 +214,10 @@ func (h *TaskHandlers) TaskSetDone(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) TaskUnsetDone(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := parseId(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

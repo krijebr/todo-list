@@ -3,12 +3,10 @@ document.getElementById('main').onload = function()
 {
 	console.log('Hello')
   LoadTasks()
-  //CreateTask()
 }
 
 async function deleteTask(id) 
 {
-  alert(id)
   request = {
     method: "DELETE",
 }
@@ -17,6 +15,7 @@ async function deleteTask(id)
         alert("Ошибка удаления задачи: " + response.status);
         return
     }
+    LoadTasks()
 }
 
 
@@ -35,6 +34,13 @@ function renderTask(element)
   let checkbox = document.createElement('input')    
   checkbox.type = 'checkbox'
   checkbox.className = 'form-check-input me-1'
+
+
+  checkbox.addEventListener('change',function(e) {
+    changecheckbox(element.id,e);
+  });
+
+
   if (element.is_done == true) 
   {
     checkbox.checked = true
@@ -82,24 +88,48 @@ async function LoadTasks()
 async function createtask() 
 {
   json_body = {
-    "name":document.getElementById('newtask')
+    name: document.getElementById('newtask').value
   }
-
   request = {
     method: "POST",
     headers: {
       'Content-type': 'application/json'
     },
-    body: JSON.stringify(
-      { name: document.getElementById('newtask')})
+    body: JSON.stringify(json_body)
 }
   let response = await fetch(baseURL + "/task", request);
-  alert(response.status)
     if (response.status != 201 ) { 
-        alert("Ошибка удаления задачи: " + response.status);
+        alert("Ошибка добавления задачи : " + response.status);
         return
     }
+    document.getElementById('newtask').value = ''
+    LoadTasks()
 }
 
-
+async function changecheckbox(id,e)
+{
+  if (e.target.checked == true)
+  {
+    request = {
+      method: "PUT"
+    }
+    let response = await fetch(baseURL + "/task/"+id+"/set-done", request);
+      if (response.status != 200 ) { 
+          alert("Ошибка изменения статуса задачи : " + response.status);
+          return
+      }
+  }
+  else
+  {
+    request = {
+      method: "PUT"
+    }
+    let response = await fetch(baseURL + "/task/"+id+"/unset-done", request);
+      if (response.status != 200 ) { 
+          alert("Ошибка изменения статуса задачи : " + response.status);
+          return
+      }
+  }
+  LoadTasks()
+}
 
