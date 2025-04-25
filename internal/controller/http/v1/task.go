@@ -23,12 +23,14 @@ func NewTaskHandlers(uc usecase.TaskUseCase) *TaskHandlers {
 func CreateRouter(uc usecase.TaskUseCase) *mux.Router {
 	myhandler := NewTaskHandlers(uc)
 	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/task", myhandler.allTasks).Methods("GET")
+	myRouter.HandleFunc("/task", myhandler.allTasks).Methods("GET", http.MethodOptions)
 	myRouter.HandleFunc("/task", myhandler.createTask).Methods("POST")
 	myRouter.HandleFunc("/task/{id:[0-9]+}", myhandler.deleteTask).Methods("DELETE")
 	myRouter.HandleFunc("/task/{id:[0-9]+}", myhandler.updateTask).Methods("PUT")
 	myRouter.HandleFunc("/task/{id:[0-9]+}/set-done", myhandler.TaskSetDone).Methods("PUT")
 	myRouter.HandleFunc("/task/{id:[0-9]+}/unset-done", myhandler.TaskUnsetDone).Methods("PUT")
+	myRouter.HandleFunc("/task/{id:[0-9]+}/unset-done", myhandler.TaskUnsetDone)
+	myRouter.HandleFunc("/task/{id:[0-9]+}", myhandler.options).Methods("OPTIONS")
 
 	return myRouter
 }
@@ -40,7 +42,20 @@ func parseId(r *http.Request) (int, error) {
 	return id, nil
 }
 
+func (h *TaskHandlers) options(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
+}
+
 func (h *TaskHandlers) allTasks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	tasks, err := h.usecase.GetAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -74,6 +89,10 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = h.usecase.Create(&newtask)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err != nil {
 		switch {
 		case err == usecase.ErrInvalidTaskName:
@@ -91,6 +110,11 @@ func (h *TaskHandlers) createTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TaskHandlers) deleteTask(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	id, err := parseId(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -10,11 +10,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-    crossorigin="anonymous"></script>
-
+<body id="main">
   <div class="card">
     <div class="card-body">
       <h5 class="card-title app-title">todo app</h5>
@@ -22,16 +18,16 @@
       <form>
         <div class="add-task-form">
           <div class="col-task-name">
-            <input type="text" class="form-control" id="netTaskInput" placeholder="Введите название задачи...">
+            <input type="text" id="newtask" class="form-control" id="netTaskInput" placeholder="Введите название задачи...">
           </div>
           <div class="col-add-task">
-            <button type="button" class="btn btn-primary">Add Task</button>
+            <button type="button" class="btn btn-primary" onclick="createtask()">Add Task</button>
           </div>
         </div>
       </form>
 
-      <ul class="list-group">
-        <li class="list-group-item">
+      <ul class="list-group" id="container">
+        <li class="list-group-item" style = "display: none;">
           <div class="item-content">
             <div>
               <input class="form-check-input me-1" type="checkbox" value="">
@@ -39,13 +35,18 @@
             </div>
             <div style="min-width: 100px;">
               <button class="btn btn-outline-primary btn-sm">Edit</button>
-              <button class="btn btn-outline-danger btn-sm">Delete</button>
+              <button onClick="DeleteTask(element.id)" class="btn btn-outline-danger btn-sm">Delete</button>
             </div>
           </div>
-        </li>
+        </li> 
       </ul>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+  crossorigin="anonymous"></script>
+  <script src="script.js"></script>
 
 </body>
 
