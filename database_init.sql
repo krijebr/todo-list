@@ -1,4 +1,4 @@
-CREATE TABLE public.tasks1 (
+CREATE TABLE tasks1 (
 	id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
 	"name" varchar NOT NULL,
 	is_done boolean DEFAULT false NOT NULL,
