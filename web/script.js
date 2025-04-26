@@ -9,7 +9,7 @@ async function deleteTask(id)
 {
   request = {
     method: "DELETE",
-}
+  }
   let response = await fetch(baseURL + "/task/"+id, request);
     if (!response.ok) { 
         alert("Ошибка удаления задачи: " + response.status);
@@ -47,15 +47,49 @@ function renderTask(element)
   }
   div1.appendChild(checkbox)
   let p = document.createElement('p')
+  p.id='taskname' + element.id
   p.innerHTML = element.name
   div1.appendChild(p)
+
+  let input = document.createElement('input')
+  input.id = 'taskinput'+element.id
+  input.value = element.name
+  input.style.display = 'none'
+  input.className = 'form-control'
+  div1.appendChild(input)
+
   let div2 = document.createElement('div')
   div2.style.minWidth = '100px'
   divcont.appendChild(div2)
+
+
+  
+  let buttsave = document.createElement('button')
+  buttsave.id = 'buttsave'+element.id
+  buttsave.className = 'btn btn-outline-primary btn-sm'
+  buttsave.style.display = 'none'
+  buttsave.addEventListener('click',function() {
+    updatetask(element.id);
+  });
+  
+  buttsave.textContent = 'Save'
+  div2.appendChild(buttsave)
+
+
+
+
   let buttedit = document.createElement('button')
+  buttedit.id = 'buttedit'+element.id
   buttedit.className = 'btn btn-outline-primary btn-sm'
+
+  buttedit.addEventListener('click',function() {
+    edittask(element.id);
+  });
+  
   buttedit.textContent = 'Edit'
   div2.appendChild(buttedit)
+
+
   buttdel = document.createElement('button')
   buttdel.className = 'btn btn-outline-danger btn-sm'
 
@@ -133,3 +167,39 @@ async function changecheckbox(id,e)
   LoadTasks()
 }
 
+function edittask(id)
+{
+  document.getElementById('taskinput'+id).style.display = 'inline-block'
+  document.getElementById('buttedit'+id).style.display = 'none'
+  document.getElementById('taskname'+id).style.display = 'none'
+  document.getElementById('buttsave'+id).style.display = 'inline-block'
+}
+async function updatetask(id)
+{
+  if (document.getElementById('taskname'+id).innerHTML == document.getElementById('taskinput'+id).value)
+  {
+    document.getElementById('taskinput'+id).style.display = 'none'
+    document.getElementById('buttedit'+id).style.display = 'inline-block'
+    document.getElementById('taskname'+id).style.display = 'inline'
+    document.getElementById('buttsave'+id).style.display = 'none'
+  }
+  else
+  {
+    json_body = {
+      name: document.getElementById('taskinput'+id).value
+    }
+    request = {
+      method: "PUT",
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(json_body)
+    }
+    let response = await fetch(baseURL + "/task/"+id, request);
+      if (response.status != 200 ) { 
+          alert("Ошибка обновления задачи : " + response.status);
+          return
+      }
+      LoadTasks()
+  }
+}

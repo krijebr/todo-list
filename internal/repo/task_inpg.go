@@ -27,7 +27,7 @@ func (r *TaskRepoPg) Create(t *entity.Task) error {
 	return nil
 }
 func (r *TaskRepoPg) GetAll() ([]*entity.Task, error) {
-	rows, err := r.db.Query("select * from tasks order by id")
+	rows, err := r.db.Query("select * from tasks order by id DESC")
 	if err != nil {
 		return nil, err
 	}
