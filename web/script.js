@@ -1,4 +1,4 @@
-var baseURL ="http://127.0.0.1:8080"
+var baseURL ="http://82.202.140.15:80"
 document.getElementById('main').onload = function()
 {
 	console.log('Hello')
