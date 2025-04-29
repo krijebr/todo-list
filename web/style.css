@@ -24,8 +24,15 @@ html, body {
     width: 100%;
 }
 
-.col-add-task {
-    /*margin-left: auto;*/
+.task-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-name p {
+    margin: 0;
 }
 
 .item-content {

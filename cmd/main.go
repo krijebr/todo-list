@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const confpath string = "../config/config.json"
+const confpath string = "./config/config.json"
 
 func main() {
 	log.Println("starting app")

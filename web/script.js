@@ -30,6 +30,7 @@ function renderTask(element)
   divcont.className = 'item-content'
   taskElement.appendChild(divcont)
   let div1 = document.createElement('div')
+  div1.className = "task-name"
   divcont.appendChild(div1)
   let checkbox = document.createElement('input')    
   checkbox.type = 'checkbox'
@@ -49,6 +50,10 @@ function renderTask(element)
   let p = document.createElement('p')
   p.id='taskname' + element.id
   p.innerHTML = element.name
+  if (element.is_done == true) 
+    {
+      p.style.textDecoration = 'line-through'
+    }
   div1.appendChild(p)
 
   let input = document.createElement('input')
